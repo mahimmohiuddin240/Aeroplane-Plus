@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aviator Demo Game</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background-color: #111;
+      color: white;
+    }
+    #multiplier {
+      font-size: 48px;
+      margin-top: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 30px;
+      cursor: pointer;
+    }
+    .win { color: #0f0; }
+    .lose { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Aviator Demo</h1>
+  <div id="multiplier">1.00x</div>
+  <button onclick="cashOut()">Cash Out</button>
+  <div id="result"></div>
+
+  <script>
+    let multiplier = 1.00;
+    let crashed = false;
+    let cashedOut = false;
+
+    // Crash point randomly between 1.5x to 10x
+    const crashPoint = (Math.random() * 8.5 + 1.5).toFixed(2);
+
+    const interval = setInterval(() => {
+      if (crashed || cashedOut) return;
+
+      multiplier += 0.05;
+      document.getElementById("multiplier").innerText = multiplier.toFixed(2) + "x";
+
+      if (multiplier >= crashPoint) {
+        crashed = true;
+        clearInterval(interval);
+        document.getElementById("multiplier").innerText = "CRASHED at " + crashPoint + "x";
+        document.getElementById("multiplier").className = "lose";
+        if (!cashedOut)
+          document.getElementById("result").innerText = "You Lost!";
+      }
+    }, 100);
+    
+    function cashOut() {
+      if (crashed || cashedOut) return;
+      cashedOut = true;
+      clearInterval(interval);
+      document.getElementById("result").innerText = "You Cashed Out at " + multiplier.toFixed(2) + "x!";
+      document.getElementById("result").className = "win";
+    }
+  </script>
+</body>
+</html>
